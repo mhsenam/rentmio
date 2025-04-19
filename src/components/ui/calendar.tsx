@@ -1,11 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
+type ChevronProps = React.HTMLAttributes<HTMLOrSVGElement> & {
+  className?: string;
+  "aria-label"?: string;
+};
 
 function Calendar({
   className,
@@ -60,16 +65,20 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
-        ),
+        Chevron: ({ className, ...props }: ChevronProps) => {
+          if (props["aria-label"] === "Previous month") {
+            return (
+              <ChevronLeft className={cn("size-4", className)} {...props} />
+            );
+          }
+          return (
+            <ChevronRight className={cn("size-4", className)} {...props} />
+          );
+        },
       }}
       {...props}
     />
-  )
+  );
 }
 
-export { Calendar }
+export { Calendar };

@@ -73,7 +73,12 @@ export function DateRangePicker({
                 "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
               row: "flex w-full mt-2",
               cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-              day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-full",
+              day: cn(
+                "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-full",
+                date?.from &&
+                  date?.to &&
+                  "data-range-start:bg-rose-500 data-range-start:text-primary-foreground data-range-end:bg-rose-500 data-range-end:text-primary-foreground data-range-middle:bg-rose-100 data-range-middle:text-rose-900"
+              ),
               day_selected:
                 "bg-rose-500 text-primary-foreground hover:bg-rose-500 hover:text-primary-foreground focus:bg-rose-500 focus:text-primary-foreground",
               day_today: "bg-accent text-accent-foreground",
@@ -82,20 +87,6 @@ export function DateRangePicker({
               day_range_middle:
                 "aria-selected:bg-accent aria-selected:text-accent-foreground",
               day_hidden: "invisible",
-            }}
-            components={{
-              DayContent: (props) => (
-                <div
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-full p-0",
-                    props.date >= (date?.from ?? new Date()) &&
-                      props.date <= (date?.to ?? new Date()) &&
-                      "bg-rose-100 text-rose-900"
-                  )}
-                >
-                  {props.date.getDate()}
-                </div>
-              ),
             }}
           />
         </PopoverContent>
