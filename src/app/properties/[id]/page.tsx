@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Property } from "@/lib/models";
 import { getProperty } from "@/lib/propertyService";
 import { mockProperties } from "@/lib/data";
@@ -27,11 +27,24 @@ import {
   Map,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react";
+import { createConversation, Participant } from "@/lib/messageService";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
+  const router = useRouter();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -45,6 +58,8 @@ export default function PropertyDetailPage() {
     infants: 0,
     pets: 0,
   });
+  const [initialMessage, setInitialMessage] = useState("");
+  const [messageLoading, setMessageLoading] = useState(false);
 
   // Calculate total guests
   const totalGuests = guestCount.adults + guestCount.children;
@@ -101,6 +116,45 @@ export default function PropertyDetailPage() {
       setActiveImageIndex((prev) =>
         prev === 0 ? property.images.length - 1 : prev - 1
       );
+    }
+  };
+
+  const handleContactHost = async () => {
+    if (!user || !userData || !property) return;
+
+    setMessageLoading(true);
+    try {
+      // Create participants array
+      const participants: Participant[] = [
+        {
+          id: user.uid,
+          displayName: userData.displayName || "User",
+          photoURL: userData.photoURL || undefined,
+        },
+        {
+          id: property.ownerId || "mock-owner-id", // For mock data
+          displayName: property.hostName,
+          photoURL: property.hostImage,
+        },
+      ];
+
+      // Create a new conversation
+      const conversationId = await createConversation(
+        participants,
+        id as string,
+        property.title
+      );
+
+      // Redirect to messages page
+      router.push(
+        `/messages?conversation=${conversationId}&message=${encodeURIComponent(
+          initialMessage
+        )}`
+      );
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+    } finally {
+      setMessageLoading(false);
     }
   };
 
@@ -239,6 +293,48 @@ export default function PropertyDetailPage() {
                 />
               </div>
             </div>
+            {user && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="mt-4 flex items-center gap-2"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    Contact Host
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Message to {property.hostName}</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Textarea
+                      value={initialMessage}
+                      onChange={(e) => setInitialMessage(e.target.value)}
+                      placeholder={`Hello ${property.hostName}, I'm interested in your property "${property.title}"...`}
+                      className="min-h-[120px]"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      onClick={handleContactHost}
+                      disabled={messageLoading}
+                    >
+                      {messageLoading ? (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      ) : (
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                      )}
+                      Send Message
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
 
           {/* Property Description */}

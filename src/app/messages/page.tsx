@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,6 +36,7 @@ const formatTimestamp = (timestamp: Date | Timestamp) => {
 export default function MessagesPage() {
   const { user, userData } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] =
     useState<Conversation | null>(null);
@@ -56,8 +57,33 @@ export default function MessagesPage() {
         const fetchedConversations = await getConversations(user.uid);
         setConversations(fetchedConversations);
 
-        // Set the first conversation as active if available
-        if (fetchedConversations.length > 0 && !activeConversation) {
+        // Check for conversation ID in URL
+        const conversationId = searchParams.get("conversation");
+        const initialMessage = searchParams.get("message");
+
+        if (conversationId) {
+          // Find conversation in fetched conversations
+          const targetConversation = fetchedConversations.find(
+            (conv) => conv.id === conversationId
+          );
+
+          if (targetConversation) {
+            setActiveConversation(targetConversation);
+
+            // Set initial message if provided
+            if (initialMessage) {
+              setNewMessage(decodeURIComponent(initialMessage));
+            }
+          }
+
+          // Clear URL params after handling
+          if (window.history.replaceState) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+          }
+        }
+        // Otherwise set the first conversation as active if available
+        else if (fetchedConversations.length > 0 && !activeConversation) {
           setActiveConversation(fetchedConversations[0]);
         }
       } catch (error) {
@@ -68,7 +94,7 @@ export default function MessagesPage() {
     };
 
     fetchConversations();
-  }, [user, router, activeConversation]);
+  }, [user, router, searchParams]);
 
   useEffect(() => {
     if (activeConversation && user) {
@@ -91,6 +117,19 @@ export default function MessagesPage() {
       fetchMessages();
     }
   }, [activeConversation, user]);
+
+  // Auto-send initial message if present
+  useEffect(() => {
+    if (
+      activeConversation &&
+      user &&
+      newMessage &&
+      !sendingMessage &&
+      messages.length === 0
+    ) {
+      handleSendMessage();
+    }
+  }, [activeConversation, messages]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !activeConversation || !user) return;
@@ -182,8 +221,18 @@ export default function MessagesPage() {
                           {otherUser?.displayName || "User"}
                         </p>
                         <p className="text-sm text-gray-500 truncate">
+                          {conversation.propertyTitle && (
+                            <span className="font-medium text-primary">
+                              {conversation.propertyTitle}
+                            </span>
+                          )}
+                          {conversation.propertyTitle &&
+                            conversation.lastMessage &&
+                            " - "}
                           {conversation.lastMessage?.content ||
-                            "No messages yet"}
+                            (conversation.propertyTitle
+                              ? ""
+                              : "No messages yet")}
                         </p>
                       </div>
                       {conversation.lastMessage && (

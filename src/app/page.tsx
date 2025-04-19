@@ -84,7 +84,7 @@ export default function Home() {
       <section className="relative w-full">
         <div className="relative h-[280px] md:h-[500px] w-full">
           <Image
-            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80"
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80"
             alt="Hero Image"
             fill
             className="object-cover"
