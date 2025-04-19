@@ -27,6 +27,7 @@ export type Property = {
   latitude?: number;
   longitude?: number;
   type: string;
+  status: string;
   createdAt: Date;
 };
 

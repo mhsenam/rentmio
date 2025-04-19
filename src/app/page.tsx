@@ -12,7 +12,7 @@ import { AirbnbCalendar } from "@/components/ui/airbnb-calendar";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { getFeaturedProperties } from "@/lib/propertyService";
+import { getProperties } from "@/lib/propertyService";
 import { Property } from "@/lib/models";
 import {
   getCategories,
@@ -26,24 +26,24 @@ export default function Home() {
     from: new Date(2025, 3, 11), // Apr 11, 2025
     to: new Date(2025, 3, 17), // Apr 17, 2025
   });
-  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loadingProperties, setLoadingProperties] = useState(true);
+  const [loadingAllProperties, setLoadingAllProperties] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingExperiences, setLoadingExperiences] = useState(true);
 
   useEffect(() => {
-    const fetchFeaturedProperties = async () => {
-      setLoadingProperties(true);
+    const fetchAllProperties = async () => {
+      setLoadingAllProperties(true);
       try {
-        const fetchedProperties = await getFeaturedProperties();
-        setFeaturedProperties(fetchedProperties);
+        const { properties: fetchedProperties } = await getProperties();
+        setAllProperties(fetchedProperties);
       } catch (error) {
         console.error("Error fetching properties:", error);
-        setFeaturedProperties([]);
+        setAllProperties([]);
       } finally {
-        setLoadingProperties(false);
+        setLoadingAllProperties(false);
       }
     };
 
@@ -73,7 +73,7 @@ export default function Home() {
       }
     };
 
-    fetchFeaturedProperties();
+    fetchAllProperties();
     fetchCategories();
     fetchExperiences();
   }, []);
@@ -352,14 +352,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Properties */}
+      {/* Properties Section - Updated */}
       <section className="py-8 md:py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
-            Featured properties
+            Available Properties
           </h2>
 
-          {loadingProperties ? (
+          {loadingAllProperties ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
                 <Card key={i} className="overflow-hidden">
@@ -371,9 +371,9 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          ) : featuredProperties.length > 0 ? (
+          ) : allProperties.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {featuredProperties.map((property) => (
+              {allProperties.map((property) => (
                 <Link
                   key={property.id}
                   href={`/properties/${property.id}`}
@@ -399,7 +399,7 @@ export default function Home() {
                         <div className="flex items-center min-w-fit ml-2">
                           <StarIcon className="h-4 w-4 text-amber-500 mr-1" />
                           <span className="text-sm">
-                            {property.rating.toFixed(1)}
+                            {property.rating?.toFixed(1) ?? "New"}
                           </span>
                         </div>
                       </div>
@@ -417,12 +417,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">
-                No featured properties available yet.
-              </p>
-              <Link href="/search">
-                <Button className="mt-4">Browse All Properties</Button>
-              </Link>
+              <p className="text-gray-500">No properties available yet.</p>
             </div>
           )}
         </div>

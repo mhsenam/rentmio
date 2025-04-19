@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -64,6 +64,26 @@ export default function Navbar() {
   // Temporary state while checking auth
   const isInitializing = initializing;
   const isAuthenticated = !!user;
+
+  // Debug authentication once on mount
+  useEffect(() => {
+    console.log("Auth state:", {
+      user: !!user,
+      userData: !!userData,
+      isAuthenticated,
+      isInitializing,
+    });
+  }, [user, userData, isAuthenticated, isInitializing]);
+
+  // Override scroll lock behavior for dropdown
+  useEffect(() => {
+    // This class will be added to prevent scroll lock
+    document.documentElement.classList.add("no-modal-lock");
+
+    return () => {
+      document.documentElement.classList.remove("no-modal-lock");
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
@@ -131,57 +151,75 @@ export default function Navbar() {
               <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
             </Button>
           ) : isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={userData?.photoURL || undefined}
-                      alt={userData?.displayName || "User"}
-                    />
-                    <AvatarFallback>{getInitials()}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => router.push("/profile")}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/my-properties")}
+            <>
+              {/* Debug info - remove when fixed */}
+              <div className="hidden">{`User: ${user?.uid}, Auth: ${isAuthenticated}`}</div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full relative"
+                    onClick={() => {
+                      console.log("Avatar clicked - desktop");
+                    }}
                   >
-                    <Home className="mr-2 h-4 w-4" />
-                    <span>My Properties</span>
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={userData?.photoURL || undefined}
+                        alt={userData?.displayName || "User"}
+                      />
+                      <AvatarFallback>{getInitials()}</AvatarFallback>
+                    </Avatar>
+                    {/* Keep the green indicator dot */}
+                    <span className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-3 h-3 border-2 border-white"></span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 z-[100]"
+                  sideOffset={8}
+                >
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/my-properties")}
+                    >
+                      <Home className="mr-2 h-4 w-4" />
+                      <span>My Properties</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/favorites")}>
+                      <Heart className="mr-2 h-4 w-4" />
+                      <span>Favorites</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/messages")}>
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      <span>Messages</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/favorites")}>
-                    <Heart className="mr-2 h-4 w-4" />
-                    <span>Favorites</span>
+                  <DropdownMenuItem onClick={() => router.push("/help")}>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    <span>Help & Support</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/messages")}>
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    <span>Messages</span>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
                   </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/settings")}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/help")}>
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  <span>Help & Support</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             <>
               <Button variant="ghost" asChild>

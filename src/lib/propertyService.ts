@@ -98,6 +98,9 @@ export const getProperties = async (
       constraints.push(startAfter(lastVisible));
     }
 
+    // FOR DEBUGGING: Log the constraints being applied
+    console.log("Applying query constraints:", constraints);
+
     queryRef = query(queryRef, ...constraints);
     const querySnapshot = await getDocs(queryRef);
     let properties: Property[] = [];
@@ -123,9 +126,52 @@ export const getProperties = async (
       newLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
     }
 
+    // FOR DEBUGGING: Log the number of properties found
+    console.log(`Found ${properties.length} properties`);
+
     return { properties, lastVisible: newLastVisible };
   } catch (error) {
     console.error("Error getting properties:", error);
+    throw error;
+  }
+};
+
+// TEMPORARY: Debug function to add a test property
+export const addTestProperty = async () => {
+  try {
+    const testProperty = {
+      title: "Test Property",
+      description: "This is a test property for debugging",
+      location: "Test City",
+      price: 500,
+      priceType: "night",
+      images: ["https://via.placeholder.com/800x600"],
+      bedrooms: 2,
+      bathrooms: 1,
+      guests: 4,
+      amenities: ["WiFi", "AC"],
+      ownerId: "test-owner-id",
+      ownerName: "Test Owner",
+      ownerImage: "https://via.placeholder.com/100x100",
+      featured: true,
+      rating: 4.5,
+      reviewCount: 10,
+      latitude: 40.7128,
+      longitude: -74.006,
+      type: "Apartment",
+      status: "available",
+      createdAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(
+      collection(db, PROPERTIES_COLLECTION),
+      testProperty
+    );
+
+    console.log("Test property added with ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding test property:", error);
     throw error;
   }
 };
@@ -280,6 +326,7 @@ export const addProperty = async (
   try {
     const propertyData = {
       ...property,
+      status: "available", // Ensure default status is set
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
@@ -288,6 +335,7 @@ export const addProperty = async (
       collection(db, PROPERTIES_COLLECTION),
       propertyData
     );
+
     return docRef.id;
   } catch (error) {
     console.error("Error adding property:", error);

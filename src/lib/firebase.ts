@@ -7,6 +7,7 @@ import {
   Auth,
 } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,6 +25,7 @@ const firebaseConfig = {
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
+let storage: FirebaseStorage;
 
 if (typeof window !== "undefined") {
   // Client-side only code
@@ -37,6 +39,7 @@ if (typeof window !== "undefined") {
       });
 
       db = getFirestore(app);
+      storage = getStorage(app);
 
       // Connect to emulators in development
       /* Commenting out emulator connections to use production Firebase
@@ -54,6 +57,7 @@ if (typeof window !== "undefined") {
       app = getApps()[0];
       auth = getAuth();
       db = getFirestore();
+      storage = getStorage();
     }
   } catch (error) {
     console.error("Firebase initialization error:", error);
@@ -63,6 +67,7 @@ if (typeof window !== "undefined") {
   app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  storage = getStorage(app);
 }
 
-export { app, auth, db };
+export { app, auth, db, storage };
