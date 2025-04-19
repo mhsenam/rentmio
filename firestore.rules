@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to read and update only their own profile data
+    match /users/{userId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+    
+    // Property listings - public read, but only owner can write
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      allow update: if request.auth != null && (
+        // Owner can update
+        resource.data.ownerId == request.auth.uid ||
+        // Admin can set featured flag
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['featured']) && isAdmin())
+      );
+      allow delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+    }
+    
+    // Bookings - users can see their own bookings and bookings for properties they own
+    match /bookings/{bookingId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == resource.data.userId || 
+        request.auth.uid == resource.data.ownerId
+      );
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.userId || 
+        request.auth.uid == resource.data.ownerId
+      );
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Reviews - publicly readable, only author can modify
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Messages - only participants of the conversation can read/write
+    match /messages/{messageId} {
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/conversations/$(resource.data.conversationId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(resource.data.conversationId)).data.participantIds;
+      
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.senderId &&
+        exists(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)).data.participantIds;
+      
+      allow update: if request.auth != null && request.auth.uid == resource.data.senderId;
+    }
+    
+    // Conversations - only participants can read/write
+    match /conversations/{conversationId} {
+      allow read: if request.auth != null && 
+        request.auth.uid in resource.data.participantIds;
+      
+      allow create: if request.auth != null &&
+        request.auth.uid in request.resource.data.participantIds;
+        
+      allow update: if request.auth != null &&
+        request.auth.uid in resource.data.participantIds;
+    }
+    
+    // Favorites - users can read/write their own favorites
+    match /favorites/{favoriteId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+  }
+} 
