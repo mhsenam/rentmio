@@ -29,6 +29,15 @@ export type Property = {
   type: string;
   status: string;
   createdAt: Date;
+  hostName: string;
+  hostImage: string;
+  reviews?: number;
+  area?: number;
+  propertyType?: string;
+  availability?: {
+    startDate: string;
+    endDate: string;
+  };
 };
 
 export type Category = {

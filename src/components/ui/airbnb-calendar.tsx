@@ -18,8 +18,9 @@ interface AirbnbCalendarProps {
   value: DateRange | undefined;
   onChange: (value: DateRange | undefined) => void;
   onOpenChange?: (open: boolean) => void;
-  triggerContent: React.ReactNode;
+  triggerContent?: React.ReactNode;
   align?: "start" | "center" | "end";
+  className?: string;
 }
 
 export function AirbnbCalendar({
@@ -28,6 +29,7 @@ export function AirbnbCalendar({
   onOpenChange,
   triggerContent,
   align = "center",
+  className,
 }: AirbnbCalendarProps) {
   const [currentMonth, setCurrentMonth] = React.useState<Date>(new Date());
 
@@ -41,7 +43,9 @@ export function AirbnbCalendar({
 
   return (
     <Popover onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>{triggerContent}</PopoverTrigger>
+      {triggerContent && (
+        <PopoverTrigger asChild>{triggerContent}</PopoverTrigger>
+      )}
       <PopoverContent
         className="w-auto md:w-auto p-0 bg-white max-w-[calc(100vw-24px)] md:max-w-none"
         align={align}

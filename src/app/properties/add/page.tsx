@@ -212,10 +212,14 @@ export default function AddPropertyPage() {
         hostName: userData?.displayName || "Host",
         hostImage: userData?.photoURL || "/images/default-avatar.jpg",
         ownerId: user.uid,
+        ownerName: userData?.displayName || "Host",
         rating: 0,
         reviews: 0,
+        reviewCount: 0,
+        guests: data.bedrooms * 2, // Assuming 2 guests per bedroom
         featured: false,
         status: "available",
+        type: data.propertyType || "Apartment",
         availability: {
           startDate: new Date().toISOString(),
           endDate: new Date(
