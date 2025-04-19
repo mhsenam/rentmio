@@ -40,6 +40,7 @@ interface UserData {
   displayName: string | null;
   photoURL: string | null;
   createdAt?: any;
+  bio?: string;
 }
 
 interface AuthContextType {
