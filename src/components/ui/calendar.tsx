@@ -2,22 +2,19 @@
 
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, DayPickerProps } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-type ChevronProps = React.HTMLAttributes<HTMLOrSVGElement> & {
-  className?: string;
-  "aria-label"?: string;
-};
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
   ...props
-}: React.ComponentProps<typeof DayPicker>) {
+}: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -65,14 +62,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Chevron: ({ className, ...props }: ChevronProps) => {
-          if (props["aria-label"] === "Previous month") {
-            return (
-              <ChevronLeft className={cn("size-4", className)} {...props} />
-            );
-          }
-          return (
-            <ChevronRight className={cn("size-4", className)} {...props} />
+        Chevron: ({ orientation }) => {
+          return orientation === "left" ? (
+            <ChevronLeft className="size-4" />
+          ) : (
+            <ChevronRight className="size-4" />
           );
         },
       }}
