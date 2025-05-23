@@ -35,6 +35,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Navbar() {
   const { user, userData, logout, loading, initializing } = useAuth();
@@ -86,7 +87,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+    <header className="sticky top-0 z-50 bg-background border-b shadow-sm"> {/* Changed bg-white to bg-background */}
       {/* Desktop Navigation - Hidden on mobile */}
       <div className="hidden md:flex h-16 items-center justify-between px-4">
         <Link href="/" className="font-bold text-xl text-primary">
@@ -141,6 +142,7 @@ export default function Navbar() {
 
         {/* Desktop Right Actions */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           {isInitializing ? (
             // Show a subtle loading state instead of flickering buttons
             <Button
@@ -208,10 +210,10 @@ export default function Navbar() {
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/help")}>
+                {/* <DropdownMenuItem onClick={() => router.push("/help")}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     <span>Help & Support</span>
-                  </DropdownMenuItem>
+                </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -292,6 +294,9 @@ export default function Navbar() {
               )}
 
               <nav className="space-y-1">
+                <div className="px-4 py-3">
+                  <ThemeToggle />
+                </div>
                 <Link
                   href="/"
                   className={`flex items-center px-4 py-3 text-sm ${
@@ -402,7 +407,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t flex justify-around py-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t flex justify-around py-2"> {/* Changed bg-white to bg-background */}
         <Link
           href="/"
           className={`flex flex-col items-center p-2 ${

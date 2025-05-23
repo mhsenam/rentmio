@@ -9,7 +9,8 @@ interface PropertyCardProps {
 export function PropertyCard({ property }: PropertyCardProps) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md">
-      <div className="relative h-[240px] w-full overflow-hidden sm:h-[200px]">
+      {/* Adjusted height: smaller on mobile (h-[180px]), slightly larger on sm screens (sm:h-[200px]) */}
+      <div className="relative h-[180px] w-full overflow-hidden sm:h-[200px]">
         <Image
           src={property.images[0]}
           alt={property.title}

@@ -202,7 +202,7 @@ function SignUp() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-primary"
+              className="w-full"
               disabled={loading}
             >
               {loading ? "Creating account..." : "Sign Up"}

@@ -205,13 +205,13 @@ export default function PropertyDetailPage() {
             <span className="mx-1">·</span>
             <span className="text-gray-600">{property.location}</span>
           </div>
-          <div className="flex gap-4">
-            <button className="flex items-center gap-1 text-sm font-medium">
+          <div className="flex gap-2"> {/* Reduced gap slightly for ghost buttons */}
+            <Button variant="ghost" size="sm" className="flex items-center gap-1">
               <Share className="h-4 w-4" /> Share
-            </button>
-            <button className="flex items-center gap-1 text-sm font-medium">
+            </Button>
+            <Button variant="ghost" size="sm" className="flex items-center gap-1">
               <Heart className="h-4 w-4" /> Save
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -346,7 +346,8 @@ export default function PropertyDetailPage() {
           {/* Property Features */}
           <div className="mb-6 pb-6 border-b">
             <h2 className="text-xl font-bold mb-4">Property highlights</h2>
-            <div className="grid grid-cols-2 gap-4">
+            {/* Adjusted grid for better mobile responsiveness */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <Bed className="h-6 w-6 text-gray-600" />
                 <div>
@@ -387,7 +388,8 @@ export default function PropertyDetailPage() {
           {/* Amenities */}
           <div className="mb-6 pb-6 border-b">
             <h2 className="text-xl font-bold mb-4">Amenities</h2>
-            <div className="grid grid-cols-2 gap-4">
+            {/* Adjusted grid for better mobile responsiveness */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {property.amenities.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <Check className="h-5 w-5 text-green-600" />

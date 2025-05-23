@@ -204,22 +204,22 @@ export default function MyPropertiesPage() {
                             <Eye className="h-4 w-4 mr-2" />
                             View Listing
                           </DropdownMenuItem>
-                          <DropdownMenuItem
+                          {/* <DropdownMenuItem
                             onClick={() =>
                               router.push(`/properties/${property.id}/edit`)
                             }
                           >
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Property
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
+                          </DropdownMenuItem> */}
+                          {/* <DropdownMenuItem
                             onClick={() =>
                               router.push(`/properties/${property.id}/bookings`)
                             }
                           >
                             <Calendar className="h-4 w-4 mr-2" />
                             View Bookings
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                           <DropdownMenuItem
                             className="text-red-600 focus:text-red-600"
                             onClick={() => setPropertyToDelete(property)}
@@ -263,7 +263,7 @@ export default function MyPropertiesPage() {
                         {property.status === "available" ? "Active" : "Booked"}
                       </span>
                     </div>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="sm"
                       onClick={() =>
@@ -272,6 +272,15 @@ export default function MyPropertiesPage() {
                     >
                       <Edit className="h-3 w-3 mr-1" />
                       Manage
+                    </Button> */}
+                    {/* Placeholder for a valid action, or remove if no other direct action */}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => router.push(`/properties/${property.id}`)}
+                    >
+                      <Eye className="h-3 w-3 mr-1" />
+                      View
                     </Button>
                   </CardFooter>
                 </Card>

@@ -50,43 +50,43 @@ export default function Footer() {
                 About
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/blog"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Blog
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link
                 href="/careers"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Careers
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div>
           <h4 className="font-medium text-sm mb-4 font-mono">LEGAL</h4>
           <ul className="space-y-3">
-            <li>
+            {/* <li>
               <Link
                 href="/privacy"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Privacy
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link
                 href="/terms"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Terms
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
