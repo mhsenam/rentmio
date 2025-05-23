@@ -187,7 +187,8 @@ export default function Home() {
                     </Popover>
                   </div>
 
-                  <Button className="w-full h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-base font-medium">
+                  {/* Changed to default Button styling, adjusted size with classes for h-12 */}
+                  <Button size="lg" className="w-full text-base font-medium">
                     <SearchIcon className="w-5 h-5 mr-2" />
                     Search
                   </Button>
@@ -269,7 +270,8 @@ export default function Home() {
 
                   {/* Search Button */}
                   <div className="p-3 mr-2">
-                    <Button className="h-12 w-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white">
+                    {/* Changed to default Button styling, kept rounded-full and specific size via classes */}
+                    <Button size="icon" className="h-12 w-12 rounded-full">
                       <SearchIcon className="w-5 h-5" />
                     </Button>
                   </div>
@@ -423,7 +425,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Experiences */}
+      {/* Experiences Section Removed due to broken links /experiences/[id] */}
+      {/* 
       <section className="py-8 md:py-12 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
@@ -498,6 +501,7 @@ export default function Home() {
           )}
         </div>
       </section>
+      */}
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-10 px-4">

@@ -139,6 +139,11 @@ export default function ProfilePage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setProfileImage(file);
+
+      // Revoke the old object URL if it exists and is a blob URL
+      if (profileImageUrl && profileImageUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
       setProfileImageUrl(URL.createObjectURL(file));
     }
   };
@@ -223,9 +228,10 @@ export default function ProfilePage() {
                   )}
                   <Dialog>
                     <DialogTrigger asChild>
-                      <button className="absolute bottom-0 right-0 rounded-full bg-primary p-1.5 text-white hover:bg-primary/90">
+                      {/* Changed to standard Button component */}
+                      <Button variant="outline" size="icon" className="absolute bottom-0 right-0 rounded-full h-7 w-7">
                         <Upload className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

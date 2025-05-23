@@ -89,7 +89,7 @@
   --accent-foreground: 210 40% 98%;
   --popover: 224 71% 4%;
   --popover-foreground: 215 20.2% 65.1%;
-  --sidebar: 222.2 84% 4.9%;
+  /* --sidebar: 222.2 84% 4.9%; */ /* Removed duplicate */
   --sidebar-foreground: 210 40% 98%;
   --card: 222.2 84% 4.9%;
   --card-foreground: 210 40% 98%;
